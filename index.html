@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script data-require="angular.js@1.5.0" data-semver="1.5.0" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <style type="text/css">
+      ul { list-style-type: none; }
+    </style>
+    <script type="text/javascript">
+      var app = angular.module('plunker', []);
+      var ITEMS_PER_PAGE = 10;
+      var NUM_PAGES_AVAIL = 5;
+      var DATA_SIZE = 10000;
+      var createData = function() {
+        var list = new Array(DATA_SIZE);
+        var now = new Date().getTime();
+         
+        for (var i = 0; i < DATA_SIZE; i++) {
+          list[i] = {
+            id: i,
+            timestamp: Math.round(Math.random() * now)
+          };
+        }
+         
+        return list;
+      };
+      
+      app.controller('ListCtrl', function($scope) {
+        $scope.getItems = function() {
+          var start = ($scope.currentPage - 1) * ITEMS_PER_PAGE;
+          var stop = start + ITEMS_PER_PAGE;
+          return $scope.items.slice(start,stop);
+        };
+        $scope.getPages = function() {
+          var pageRange = [];
+          var start = $scope.currentPage - Math.floor(NUM_PAGES_AVAIL/2);
+          start = start < 1 ? 1 : start;
+          var end = start + NUM_PAGES_AVAIL;
+          if(end > $scope.getLastPage()) {
+            end = $scope.getLastPage();
+            start = end - NUM_PAGES_AVAIL;
+          }
+          for(var i=start; i < end; i++ ) {
+            pageRange.push(i);
+          }
+          return pageRange;
+        };
+        $scope.setCurrentPage = function(page) {
+          $scope.currentPage = page;
+        };
+        $scope.getLastPage = function() {
+          return $scope.numPages;
+        };
+        $scope.setDataSize = function(size) {
+          DATA_SIZE = size;
+          $scope.currentPage = 1;
+          $scope.numPages = Math.ceil(DATA_SIZE/ITEMS_PER_PAGE);
+          $scope.items = createData();
+        };
+        $scope.setDataSize(DATA_SIZE);
+      });
+    </script>
+  </head>
+
+  <body ng-app="plunker">
+    <div ng-controller="ListCtrl">
+      <ul>
+        <li>ID : Timestamp</li>
+        <li ng-repeat="item in getItems()">{{item.id}} : {{item.timestamp}}</li>
+      </ul>
+      <div>
+        <button ng-click="setCurrentPage(1)">&lt;&lt;</button>
+        <button ng-repeat="page in getPages()" ng-click="setCurrentPage(page)">
+          {{page}}
+        </button>
+        <button ng-click="setCurrentPage(getLastPage())">&gt;&gt;</button>
+      </div>
+      <br/>
+      <div>
+        Data size:
+        <button ng-click="setDataSize(10000)">10000</button>
+        <button ng-click="setDataSize(300000)">300000</button>
+      </div>
+    </div>
+  </body>
+
+</html>
