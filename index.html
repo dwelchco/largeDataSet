@@ -3,7 +3,6 @@
 
   <head>
     <script data-require="angular.js@1.5.0" data-semver="1.5.0" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
-    <link rel="stylesheet" href="style.css" />
     <style type="text/css">
       ul { list-style-type: none; }
     </style>
@@ -37,8 +36,8 @@
           var start = $scope.currentPage - Math.floor(NUM_PAGES_AVAIL/2);
           start = start < 1 ? 1 : start;
           var end = start + NUM_PAGES_AVAIL;
-          if(end > $scope.getLastPage()) {
-            end = $scope.getLastPage();
+          if(end > $scope.getLastPage() + 1) {
+            end = $scope.getLastPage() + 1;
             start = end - NUM_PAGES_AVAIL;
           }
           for(var i=start; i < end; i++ ) {
